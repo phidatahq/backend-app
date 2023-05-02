@@ -1,0 +1,19 @@
+from fastapi import APIRouter
+
+from api.routes.endpoints import endpoints
+from api.utils.dttm import current_utc_str
+
+######################################################
+## Router for Health Checks
+######################################################
+
+health_checks_router = APIRouter(tags=["Health Checks"])
+
+
+@health_checks_router.get(endpoints.PING)
+def health_ping():
+    return {
+        "status": "success",
+        "path": endpoints.PING,
+        "utc": current_utc_str(),
+    }

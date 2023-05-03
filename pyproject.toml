@@ -25,6 +25,7 @@ dependencies = [
   "polars",
   # Libraries for Api server
   "fastapi",
+  "fastapi-utils",
   "typer",
   "uvicorn",
   # Project Libraries
@@ -59,6 +60,7 @@ packages = ["api", "app", "db", "workspace", "notebooks", "tests", "utils"]
 line-length = 110
 exclude = [
   ".venv*",
+  "db/migrations/*",
 ]
 
 [tool.mypy]
@@ -76,6 +78,7 @@ exclude = [
 module = [
   "alembic.*",
   "celery.*",
+  "fastapi_utils.*",
   "pandas.*",
   "phidata.*",
   "setuptools.*",

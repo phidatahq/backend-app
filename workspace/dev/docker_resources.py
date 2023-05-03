@@ -61,7 +61,7 @@ container_env = {
     # Upgrade database on startup
     # "UPGRADE_DB": True,
     # Wait for database and redis to be ready
-    # "WAIT_FOR_DB": True,
+    "WAIT_FOR_DB": True,
     # "WAIT_FOR_REDIS": True,
     # Get the OpenAI API key from the environment if available
     "OPENAI_API_KEY": getenv("OPENAI_API_KEY", ""),

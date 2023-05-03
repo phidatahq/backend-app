@@ -68,8 +68,8 @@ openai==0.27.4
 packaging==23.0
 pandas==1.5.3
 pathspec==0.11.1
-phidata==1.6.1
-phiterm==1.6.1
+phidata==1.6.2
+phiterm==1.6.2
 pillow==9.5.0
 platformdirs==3.2.0
 pluggy==1.0.0

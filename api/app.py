@@ -10,7 +10,8 @@ from sqlalchemy.orm import Session, scoped_session, sessionmaker
 
 from api.settings import api_settings
 from api.routes.v1_routes import v1_router
-from api.utils.log import logger
+
+# from utils.log import logger
 
 
 def create_app() -> Tuple[FastAPI, Session, Engine]:
@@ -81,8 +82,8 @@ def create_app() -> Tuple[FastAPI, Session, Engine]:
         # logger.debug(f"Final Response Headers: {response.headers}")
         return response
 
-    if api_settings.runtime_env == "dev":
-        logger.debug(f"ApiSettings: {api_settings.json(indent=2)}")
+    # if api_settings.runtime_env == "dev":
+    #     logger.debug(f"ApiSettings: {api_settings.json(indent=2)}")
 
     return app, db_session, sqlalchemy_engine
 

@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from pydantic import BaseSettings, validator
 
-from api.utils.log import logger
+from utils.log import logger
 
 
 class ApiSettings(BaseSettings):
@@ -32,7 +32,7 @@ class ApiSettings(BaseSettings):
     db_user: Optional[str]
     db_pass: Optional[str]
     db_schema: Optional[str]
-    db_driver: str = "mysql+msqlconnector"
+    db_driver: str = "mysql+mysqlconnector"
 
     # Redis configuration
     redis_host: Optional[str]

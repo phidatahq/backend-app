@@ -70,7 +70,9 @@ prd_db_instance = DbInstance(
     db_subnet_group=prd_db_subnet_group,
     enable_performance_insights=True,
     vpc_security_group_ids=ws_settings.security_groups,
-    secrets_file=ws_settings.ws_dir.joinpath("secrets/prd_postgres_secrets.yml"),
+    secrets_file=ws_settings.ws_root.joinpath(
+        "workspace/secrets/prd_postgres_secrets.yml"
+    ),
     skip_create=skip_create,
     skip_delete=skip_delete,
 )

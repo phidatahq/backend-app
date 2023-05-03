@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 from api.routes.endpoints import endpoints
-from api.utils.log import logger
+from utils.log import logger
 
 ######################################################
 ## Router for Training Jobs

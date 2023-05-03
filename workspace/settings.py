@@ -16,7 +16,7 @@ ws_settings = WorkspaceSettings(
     dev_app_enabled=True,
     dev_api_enabled=True,
     dev_jupyter_enabled=True,
-    # dev_mysql_enabled=True,
+    dev_mysql_enabled=True,
     # dev_redis_enabled=True,
     # -*- Production settings
     prd_env="prd",

@@ -23,7 +23,7 @@ ws_settings = WorkspaceSettings(
     # -*- Production Apps
     prd_app_enabled=True,
     prd_api_enabled=True,
-    # prd_mysql_enabled=True,
+    prd_mysql_enabled=True,
     # prd_redis_enabled=True,
     # -*- AWS settings
     # Region for AWS resources

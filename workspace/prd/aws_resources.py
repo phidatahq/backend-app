@@ -41,7 +41,7 @@ prd_data_s3_bucket = S3Bucket(
 prd_db_subnet_group = DbSubnetGroup(
     name=f"{ws_settings.prd_key}-db-sg",
     enabled=ws_settings.prd_postgres_enabled,
-    subnet_ids=ws_settings.private_subnets,
+    subnet_ids=ws_settings.subnet_ids,
     skip_create=skip_create,
     skip_delete=skip_delete,
 )
@@ -50,18 +50,18 @@ prd_db_subnet_group = DbSubnetGroup(
 prd_redis_subnet_group = CacheSubnetGroup(
     name=f"{ws_settings.prd_key}-cache-sg",
     enabled=ws_settings.prd_redis_enabled,
-    subnet_ids=ws_settings.private_subnets,
+    subnet_ids=ws_settings.subnet_ids,
     skip_create=skip_create,
     skip_delete=skip_delete,
 )
 
-# -*- Backend database instance #1
-db_engine = "postgres"
-prd_db_instance = DbInstance(
-    name=f"{ws_settings.prd_key}-db-a",
+# -*- Database Instance
+db_engine = "mysql"
+prd_db = DbInstance(
+    name=f"{ws_settings.prd_key}-db",
     engine=db_engine,
-    enabled=ws_settings.prd_postgres_enabled,
-    engine_version="14.5",
+    enabled=ws_settings.prd_mysql_enabled,
+    engine_version="8.0.32",
     allocated_storage=100,
     # NOTE: For production, use a larger instance type.
     # Last checked price: $0.152 per hour = ~$110 per month
@@ -69,16 +69,16 @@ prd_db_instance = DbInstance(
     availability_zone=ws_settings.aws_az1,
     db_subnet_group=prd_db_subnet_group,
     enable_performance_insights=True,
-    vpc_security_group_ids=ws_settings.security_groups,
+    # vpc_security_group_ids=ws_settings.security_groups,
     secrets_file=ws_settings.ws_root.joinpath(
-        "workspace/secrets/prd_postgres_secrets.yml"
+        "workspace/secrets/prd_mysql_secrets.yml"
     ),
     skip_create=skip_create,
     skip_delete=skip_delete,
 )
 
 # -*- Redis cache
-prd_redis_cluster = CacheCluster(
+prd_redis = CacheCluster(
     name=f"{ws_settings.prd_key}-cache",
     engine="redis",
     enabled=ws_settings.prd_redis_enabled,
@@ -86,9 +86,9 @@ prd_redis_cluster = CacheCluster(
     # NOTE: For production, use a larger instance type.
     # Last checked price: $0.068 per hour = ~$50 per month
     cache_node_type="cache.m6g.large",
-    security_group_ids=ws_settings.security_groups,
     cache_subnet_group=prd_redis_subnet_group,
     preferred_availability_zone=ws_settings.aws_az1,
+    # security_group_ids=ws_settings.security_groups,
     skip_create=skip_create,
     skip_delete=skip_delete,
 )
@@ -103,14 +103,14 @@ prd_ecs_cluster = EcsCluster(
 # container_env = {
 #     "BUILD_ENV": "prd",
 #     # Database configuration
-#     "DB_HOST": prd_db_instance.get_db_host(),
-#     "DB_PORT": prd_db_instance.get_db_port(),
-#     "DB_USER": prd_db_instance.get_master_username(),
-#     "DB_PASS": prd_db_instance.get_master_user_password(),
-#     "DB_SCHEMA": prd_db_instance.get_db_name(),
+#     "DB_HOST": prd_db.get_db_host(),
+#     "DB_PORT": prd_db.get_db_port(),
+#     "DB_USER": prd_db.get_master_username(),
+#     "DB_PASS": prd_db.get_master_user_password(),
+#     "DB_SCHEMA": prd_db.get_db_name(),
 #     # Redis configuration
-#     "REDIS_HOST": prd_redis_cluster.get_db_host(),
-#     "REDIS_PORT": prd_redis_cluster.get_db_port(),
+#     "REDIS_HOST": prd_redis.get_db_host(),
+#     "REDIS_PORT": prd_redis.get_db_port(),
 #     "REDIS_SCHEMA": 1,
 #     # Celery configuration
 #     "CELERY_REDIS_DB": 2,
@@ -166,6 +166,10 @@ prd_aws_config = AwsConfig(
     env=ws_settings.prd_env,
     apps=[prd_streamlit, prd_fastapi],
     resources=AwsResourceGroup(
+        db_subnet_groups=[prd_db_subnet_group],
+        db_instances=[prd_db],
+        cache_subnet_groups=[prd_redis_subnet_group],
+        cache_clusters=[prd_redis],
         s3_buckets=[prd_data_s3_bucket],
     ),
 )

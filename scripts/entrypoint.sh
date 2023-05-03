@@ -22,14 +22,22 @@ if [[ "$WAIT_FOR_DB" = true || "$WAIT_FOR_DB" = True ]]; then
     -timeout 300s
 fi
 
+if [[ "$WAIT_FOR_REDIS" = true || "$WAIT_FOR_REDIS" = True ]]; then
+  dockerize \
+    -wait tcp://$REDIS_HOST:$REDIS_PORT \
+    -timeout 300s
+fi
+
 ############################################################################
-# Install dependencies
+# Upgrade database
 ############################################################################
 
-if [[ "$INSTALL_REQUIREMENTS" = true || "$INSTALL_REQUIREMENTS" = True ]]; then
+if [[ "$UPGRADE_DB" = true || "$UPGRADE_DB" = True ]]; then
   echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-  echo "Installing requirements: $REQUIREMENTS_FILE_PATH"
-  pip3 install -r $REQUIREMENTS_FILE_PATH
+  echo "Upgrading Database"
+  alembic \
+    -c api/database/migrations/alembic.ini \
+    upgrade head
   echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 fi
 

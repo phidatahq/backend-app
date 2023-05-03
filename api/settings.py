@@ -2,6 +2,8 @@ from typing import List, Optional
 
 from pydantic import BaseSettings, validator
 
+from api.utils.log import logger
+
 
 class ApiSettings(BaseSettings):
     """Api settings that can be derived using environment variables.
@@ -13,12 +15,9 @@ class ApiSettings(BaseSettings):
     title: str = "Api"
     version: str = "1.0"
 
-    # Api runtime_env derived from the `runtime_env` environment variable.
-    # Valid values include "dev", "stg", "prd"
+    # Runtime env derived using the `runtime_env` environment variable.
+    # Valid values are "dev", "stg", "prd"
     runtime_env: str = "dev"
-
-    # Api secret key derived from the `secret_key` environment variable.
-    secret_key: Optional[str] = None
 
     # Set to False to disable docs server at /docs and /redoc
     docs_enabled: bool = True
@@ -27,11 +26,55 @@ class ApiSettings(BaseSettings):
     host: str = "0.0.0.0"
     port: int = 9090
 
+    # Database configuration
+    db_host: Optional[str]
+    db_port: Optional[str]
+    db_user: Optional[str]
+    db_pass: Optional[str]
+    db_schema: Optional[str]
+    db_driver: str = "mysql+msqlconnector"
+
+    # Redis configuration
+    redis_host: Optional[str]
+    redis_port: Optional[str]
+    redis_pass: Optional[str]
+    redis_schema: Optional[str]
+    redis_driver: str = "redis"
+
+    # API Keys
+    openai_api_key: Optional[str]
+
     # Cors origin list to allow requests from.
     # This list is set using the set_cors_origin_list validator
     # which uses the runtime_env variable to set the
     # default cors origin list.
     cors_origin_list: Optional[List[str]] = None
+
+    def get_db_uri(self) -> str:
+        uri = "{}://{}{}@{}:{}/{}".format(
+            self.db_driver,
+            self.db_user,
+            f":{self.db_pass}" if self.db_pass else "",
+            self.db_host,
+            self.db_port,
+            self.db_schema,
+        )
+        if "None" in uri:
+            logger.warning("No database provided, using in-memory sqlite")
+            return "sqlite://"
+        return uri
+
+    def get_redis_uri(self) -> Optional[str]:
+        uri = "{}://{}@{}:{}/{}".format(
+            self.redis_driver,
+            f":{self.redis_pass}" if self.redis_pass else "",
+            self.redis_host,
+            self.redis_port,
+            self.redis_schema,
+        )
+        if "None" in uri:
+            return None
+        return uri
 
     @validator("runtime_env")
     def validate_runtime_env(cls, runtime_env):

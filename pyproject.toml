@@ -20,19 +20,23 @@ dependencies = [
   "ruff",
   "phidata==1.6.1",
   # Libraries for data processing
+  "duckdb",
   "pandas",
   "polars",
-  "duckdb",
   # Libraries for Api server
   "fastapi",
   "typer",
   "uvicorn",
   # Project Libraries
+  "alembic",
+  "celery[redis]",
+  "mysql-connector-python",
   "openai",
   "redis",
   "requests",
-  "streamlit",
   "scikit-learn",
+  "sqlalchemy",
+  "streamlit",
   "types-redis",
 ]
 
@@ -70,6 +74,8 @@ exclude = [
 
 [[tool.mypy.overrides]]
 module = [
+  "alembic.*",
+  "celery.*",
   "pandas.*",
   "phidata.*",
   "setuptools.*",
@@ -78,6 +84,6 @@ module = [
   "phidata.*",
   "pyarrow.*",
   "setuptools.*",
-
+  "sqlalchemy.*",
 ]
 ignore_missing_imports = true

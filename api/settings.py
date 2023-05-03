@@ -34,13 +34,6 @@ class ApiSettings(BaseSettings):
     db_schema: Optional[str]
     db_driver: str = "mysql+mysqlconnector"
 
-    # Redis configuration
-    redis_host: Optional[str]
-    redis_port: Optional[str]
-    redis_pass: Optional[str]
-    redis_schema: Optional[str]
-    redis_driver: str = "redis"
-
     # API Keys
     openai_api_key: Optional[str]
 
@@ -62,18 +55,6 @@ class ApiSettings(BaseSettings):
         if "None" in uri:
             logger.warning("No database provided, using in-memory sqlite")
             return "sqlite://"
-        return uri
-
-    def get_redis_uri(self) -> Optional[str]:
-        uri = "{}://{}@{}:{}/{}".format(
-            self.redis_driver,
-            f":{self.redis_pass}" if self.redis_pass else "",
-            self.redis_host,
-            self.redis_port,
-            self.redis_schema,
-        )
-        if "None" in uri:
-            return None
         return uri
 
     @validator("runtime_env")

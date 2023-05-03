@@ -33,7 +33,9 @@ sqlalchemy_engine: Engine = create_engine(db_uri, pool_pre_ping=True)
 # 2. request_db_session: used for each request
 # db_session is a scoped session which means it is created on app startup (i.e. when it is first accessed)
 # This is used by background tasks and long-running processes
-db_session: Session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=sqlalchemy_engine))  # type: ignore # noqa
+db_session: Session = scoped_session(
+    sessionmaker(autocommit=False, autoflush=False, bind=sqlalchemy_engine)
+)  # type: ignore # noqa
 
 # request_db_session is a session created for each request
 # This is added to the request state so that it can be accessed by the request handler

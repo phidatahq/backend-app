@@ -38,7 +38,7 @@ prd_data_s3_bucket = S3Bucket(
 # -*- RDS Database Subnet Group
 prd_db_subnet_group = DbSubnetGroup(
     name=f"{ws_settings.prd_key}-db-sg",
-    enabled=ws_settings.prd_postgres_enabled,
+    enabled=ws_settings.prd_mysql_enabled,
     subnet_ids=ws_settings.subnet_ids,
     skip_create=skip_create,
     skip_delete=skip_delete,

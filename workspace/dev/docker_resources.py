@@ -1,5 +1,6 @@
 from os import getenv
 
+from phidata.app.redis import Redis
 from phidata.app.mysql import MySQLDb
 from phidata.app.fastapi import FastApiServer
 from phidata.app.streamlit import StreamlitApp
@@ -23,6 +24,15 @@ dev_db = MySQLDb(
     container_host_port=9315,
 )
 
+# -*- Redis cache
+dev_redis = Redis(
+    name=f"{ws_settings.ws_name}-redis",
+    enabled=ws_settings.dev_redis_enabled,
+    redis_password=ws_settings.ws_name,
+    command=["redis-server", "--save", "60", "1"],
+    container_host_port=9316,
+)
+
 # -*- Dev Image
 dev_image = DockerImage(
     name=f"{ws_settings.image_repo}/{ws_settings.ws_name}",
@@ -44,10 +54,15 @@ container_env = {
     "DB_USER": dev_db.get_db_user(),
     "DB_PASS": dev_db.get_db_password(),
     "DB_SCHEMA": dev_db.get_db_schema(),
+    # Redis configuration
+    "REDIS_HOST": dev_redis.get_db_host_docker(),
+    "REDIS_PORT": dev_redis.get_db_port_docker(),
+    "REDIS_SCHEMA": 1,
     # Upgrade database on startup
     # "UPGRADE_DB": True,
     # Wait for database and redis to be ready
     "WAIT_FOR_DB": True,
+    # "WAIT_FOR_REDIS": True,
     # Get the OpenAI API key from the environment if available
     "OPENAI_API_KEY": getenv("OPENAI_API_KEY", ""),
 }
@@ -82,5 +97,5 @@ dev_streamlit = StreamlitApp(
 dev_docker_config = DockerConfig(
     env=ws_settings.dev_env,
     network=ws_settings.ws_name,
-    apps=[dev_db, dev_streamlit, dev_fastapi, dev_jupyter_lab],
+    apps=[dev_db, dev_redis, dev_streamlit, dev_fastapi, dev_jupyter_lab],
 )

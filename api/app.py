@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session, scoped_session, sessionmaker
 
 from api.settings import api_settings
 from api.routes.v1_routes import v1_router
+from utils.run_jobs import run_scheduled_jobs
 from utils.log import logger
 
 
@@ -69,12 +70,11 @@ async def db_session_middleware(request: Request, call_next):
         response = await call_next(request)
     finally:
         request.state.db.close()
-    # logger.debug(f"Final Response Headers: {response.headers}")
     return response
 
 
 # Create a background task to run every 60 seconds
 @app.on_event("startup")
-@repeat_every(seconds=5, logger=logger)
-async def run_scheduled_jobs():
-    logger.info("Running scheduled jobs")
+@repeat_every(seconds=60, logger=logger)
+async def background_task():
+    run_scheduled_jobs()

@@ -21,8 +21,8 @@ ws_settings = WorkspaceSettings(
     # -*- Production settings
     prd_env="prd",
     # -*- Production Apps
-    prd_app_enabled=True,
-    prd_api_enabled=True,
+    # prd_app_enabled=True,
+    # prd_api_enabled=True,
     prd_mysql_enabled=True,
     # prd_redis_enabled=True,
     # -*- AWS settings

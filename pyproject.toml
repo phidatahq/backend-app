@@ -31,6 +31,7 @@ dependencies = [
   # Project Libraries
   "alembic",
   "celery[redis]",
+  "fabric",
   "mysql-connector-python",
   "openai",
   "redis",
@@ -62,6 +63,9 @@ exclude = [
   ".venv*",
   "db/migrations/*",
 ]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
 
 [tool.mypy]
 plugins = [

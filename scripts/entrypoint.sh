@@ -35,7 +35,7 @@ fi
 if [[ "$UPGRADE_DB" = true || "$UPGRADE_DB" = True ]]; then
   echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
   echo "Upgrading Database"
-  alembic -c db/migrations/alembic.ini upgrade head
+  alembic -c db/alembic.ini upgrade head
   echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 fi
 
